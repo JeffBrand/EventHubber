@@ -32,7 +32,13 @@ namespace EventHubber.ViewModel
             this.PartitionId = info.PartitionId;
             BeginSequenceNumber = info.BeginSequenceNumber;
             LastSequenceNumber = info.LastEnqueuedSequenceNumber;
-            MessageCount = LastSequenceNumber - BeginSequenceNumber + 1;
+
+
+            MessageCount = LastSequenceNumber - BeginSequenceNumber;
+            if (MessageCount != 0)
+            {
+                MessageCount++;
+            }
         }
 
        

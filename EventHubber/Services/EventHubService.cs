@@ -66,30 +66,63 @@ namespace EventHubber.Services
 
         }
 
-        public async Task ReadAllAsync()
+        public async Task ReadAllAsync(DateTime startTime)
         {
-           
-          _receiving = true;
-            if (_cancellation == null)
-                _cancellation = new CancellationTokenSource();
 
-            
+            PrepareToRead();
 
-            foreach (var p in _partitions)
+
+            try {
+                foreach (var p in _partitions)
+                {
+                    var rcv = await _client.GetDefaultConsumerGroup().CreateReceiverAsync(p.PartitionId, startTime.ToUniversalTime());
+                    _runningTasks.Add(p.ReadAsync(rcv, _cancellation));
+                }
+            }
+            catch (OperationCanceledException ex)
             {
-                var rcv = await _client.GetDefaultConsumerGroup().CreateReceiverAsync(p.PartitionId, DateTime.MinValue);
-                _runningTasks.Add(p.ReadAsync(rcv,_cancellation));
+                Debug.WriteLine("tasks cancelled");
             }
 
             
         }
 
-        public void StopReading()
+        public async Task ReadAllAsync(TimeSpan offset)
         {
-            _cancellation.Cancel();
-            Task.WaitAll(_runningTasks.ToArray());
-            Debug.WriteLine("Finished");
+            var time = DateTime.Now.Subtract(offset);
+            ReadAllAsync(time);
+        }
+
+        public async Task ReadAllAsync(long offset)
+        {
+            PrepareToRead();
+
+            foreach (var p in _partitions)
+            {
+                var rcv = await _client.GetDefaultConsumerGroup().CreateReceiverAsync(p.PartitionId, offset.ToString());
+                _runningTasks.Add(p.ReadAsync(rcv, _cancellation));
+            }
+        }
+
+        private void PrepareToRead()
+        {
+            _receiving = true;
+            if (_cancellation == null)
+                _cancellation = new CancellationTokenSource();
+
             _runningTasks.Clear();
+        }
+
+        public void Stop()
+        {
+            if (_cancellation != null)
+            {
+                _cancellation.Cancel();
+                Task.WaitAll(_runningTasks.ToArray());
+                _cancellation = null;
+            }
+            Debug.WriteLine("Finished");
+            //_runningTasks.Clear();
             
         }
     }

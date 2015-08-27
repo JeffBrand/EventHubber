@@ -1,4 +1,5 @@
 ﻿using EventHubber.Services;
+using EventHubber.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace EventHubber
 
         private void stopButton_Click(object sender, RoutedEventArgs e)
         {
-            service.StopReading();
+            service.Stop();
             
         }
 
@@ -65,7 +66,27 @@ namespace EventHubber
 
         private void checkPoint_Checked(object sender, RoutedEventArgs e)
         {
+           
 
+            var service = (rootGrid.DataContext as MainViewModel).EventHub;
+            switch ((e.OriginalSource as RadioButton).Tag.ToString().ToUpper())
+            {
+                case "NOW":
+                    service.CheckPoint = CheckPointTypes.Now;
+                    break;
+                case "START":
+                    service.CheckPoint = CheckPointTypes.Start;
+                    break;
+                case "MINUTES":
+                    service.CheckPoint = CheckPointTypes.PastMinutes;
+                    break;
+                case "MESSAGES":
+                    service.CheckPoint = CheckPointTypes.PastMessages;
+                    break;
+                default:
+                    throw new InvalidOperationException("Invalid Tag on Checkpoint Radio Button");
+                    
+            }
         }
     }
 }

@@ -121,7 +121,7 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
+    <Grid x:Name="rootGrid" DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="67*"/>
@@ -135,7 +135,7 @@
             <RowDefinition Height="10"/>
             <RowDefinition Height="55*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="stopButton" Content="Stop" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Click="stopButton_Click" Height="20" Grid.Column="1" Grid.Row="4"/>
+        <Button x:Name="stopButton" Content="Stop" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Height="20" Grid.Column="1" Grid.Row="4" Command="{Binding EventHub.Stop}"/>
         <Grid Grid.Column="2" Margin="0,20,0,10">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -168,23 +168,23 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <RadioButton GroupName="Checkpoints" Grid.Row="0" x:Name="radioButton" Content="Start of Partition" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <RadioButton Tag="Start" GroupName="Checkpoints" Grid.Row="0" x:Name="radioButton" Content="Start of Partition" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="checkPoint_Checked"/>
 
-                            <RadioButton GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="1" x:Name="radioButton1"   >
-                                <StackPanel Margin="0,0,0,1" Orientation="Horizontal" Grid.Row="1">
+                            <RadioButton  Tag="Minutes" GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="1" x:Name="radioButton1" Checked="checkPoint_Checked"   >
+                                <StackPanel Orientation="Horizontal" Grid.Row="1">
                                     <Label Content="Start "/>
                                     <TextBox Text="1" Width="20"/>
                                     <Label Content=" Minutes in the Past "/>
                                 </StackPanel>
                             </RadioButton>
-                            <RadioButton GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="2" x:Name="radioButton4"   >
-                                <StackPanel Margin="0,0,0,1" Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center">
+                            <RadioButton Tag="Messages" GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="2" x:Name="radioButton4" Checked="checkPoint_Checked"   >
+                                <StackPanel  Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center">
                                     <Label Content="Start "/>
                                     <TextBox Text="1" Width="20"/>
                                     <Label Content=" Messages in the Past "/>
                                 </StackPanel>
                             </RadioButton>
-                            <RadioButton GroupName="Checkpoints" Grid.Row="3" x:Name="radioButton2" Content="Now" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True" Checked="checkPoint_Checked"/>
+                            <RadioButton Tag="Now" GroupName="Checkpoints" Grid.Row="3" x:Name="radioButton2" Content="Now" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True" Checked="checkPoint_Checked"/>
                         </Grid>
                     </GroupBox.Content>
                 </GroupBox>

@@ -10,7 +10,9 @@ namespace EventHubber.Services
         IObservable<PartitionRuntimeInformation> PartitionFound { get; }
         IObservable<EventHubMessage> MessageReceived{ get; }
         Task OpenEventHubAsync(string eventHubConnectionString, string hubName);
-        Task ReadAllAsync();
-        void StopReading();
+        Task ReadAllAsync(DateTime startTime);
+        Task ReadAllAsync(TimeSpan offset);
+        Task ReadAllAsync(long offset);
+        void Stop();
     }
 }
