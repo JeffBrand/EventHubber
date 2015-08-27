@@ -30,13 +30,13 @@ namespace EventHubber
         private async void openButton_Click(object sender, RoutedEventArgs e)
         {
             progressBar.Visibility = Visibility.Visible;
-            service = new EventHubService(txtConnectionString.Text);
-            await service.OpenEventHubAsync(txtEventHub.Text);
+            //service = new EventHubService(txtConnectionString.Text);
+            //await service.OpenEventHubAsync(txtEventHub.Text);
             //service = new EventHubService("Endpoint=sb://jbrandhackathon.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=M6p0Uz+OoSN5cUHySyYSaXKQ//f4ba4P5tz0n1HSFOA=");
             //await service.OpenEventHubAsync("hackhub");
 
-            partitionList.ItemsSource = service.Partitions;
-            messageList.ItemsSource = service.Messages;
+            //partitionList.ItemsSource = 
+            //messageList.ItemsSource = service.Messages;
             progressBar.Visibility = Visibility.Hidden;
            
         }
@@ -44,9 +44,9 @@ namespace EventHubber
         private async void partitionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var index = partitionList.SelectedIndex;
-            var partition = service.Partitions[index];
+            //var partition = service.Partitions[index];
 
-            await service.StartReadingAsync(partition.PartitionId, DateTime.MinValue);
+            //await service.StartReadingAsync(partition.PartitionId, DateTime.MinValue);
         }
 
         private void stopButton_Click(object sender, RoutedEventArgs e)
@@ -57,10 +57,15 @@ namespace EventHubber
 
         private async void openAllButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var p in service.Partitions)
-            {
-                await service.StartReadingAsync(p.PartitionId, DateTime.MinValue);
-            }
+            //foreach (var p in service.Partitions)
+            //{
+            //    await service.StartReadingAsync(p.PartitionId, DateTime.MinValue);
+            //}
+        }
+
+        private void checkPoint_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.ServiceBus.Messaging;
+﻿using GalaSoft.MvvmLight;
+using Microsoft.ServiceBus.Messaging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EventHubber.Models
+namespace EventHubber.ViewModel
 {
-    public class PartitionViewModel : INotifyPropertyChanged
+    public class PartitionViewModel : ViewModelBase
     {
         public string PartitionId { get; set; }
         private long BeginSequenceNumber { get; set; }
@@ -31,16 +32,11 @@ namespace EventHubber.Models
             this.PartitionId = info.PartitionId;
             BeginSequenceNumber = info.BeginSequenceNumber;
             LastSequenceNumber = info.LastEnqueuedSequenceNumber;
-            MessageCount = LastSequenceNumber - BeginSequenceNumber;
+            MessageCount = LastSequenceNumber - BeginSequenceNumber + 1;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+       
 
-        void RaisePropertyChanged(string propName)
-        {
-            var handler = this.PropertyChanged;
-            if (handler != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
+        
     }
 }

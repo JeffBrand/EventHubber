@@ -12,6 +12,7 @@
   See http://www.galasoft.ch/mvvm
 */
 
+using EventHubber.Services;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -43,6 +44,8 @@ namespace EventHubber.ViewModel
             ////}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<EventHubViewModel>();
+            SimpleIoc.Default.Register<IEventHubService, EventHubService>();
         }
 
         public MainViewModel Main

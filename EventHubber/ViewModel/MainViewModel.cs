@@ -1,4 +1,5 @@
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace EventHubber.ViewModel
 {
@@ -16,11 +17,10 @@ namespace EventHubber.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
+        public EventHubViewModel EventHub { get; set; }
         public MainViewModel()
         {
+            this.EventHub = SimpleIoc.Default.GetInstance<EventHubViewModel>();
             ////if (IsInDesignMode)
             ////{
             ////    // Code runs in Blend --> create design time data.

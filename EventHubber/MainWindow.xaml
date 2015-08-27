@@ -38,44 +38,165 @@
                 <TextBlock x:Name="textBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Stretch" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="RadioButton.Static.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="RadioButton.Static.Border" Color="#FF707070"/>
+        <Style x:Key="OptionMarkFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Background" Color="#FFF3F9FF"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Border" Color="#FF5593FF"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Border" Color="#FFBCBCBC"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Glyph" Color="#FF707070"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Background" Color="#FFD9ECFF"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Border" Color="#FF3C77DD"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="RadioButton.Static.Glyph" Color="#FF212121"/>
+        <Style x:Key="RadioButtonCentered" TargetType="{x:Type RadioButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource RadioButton.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource RadioButton.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="radioButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="100" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1,1,2,1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Grid x:Name="markGrid" Margin="2">
+                                    <Ellipse x:Name="optionMark" Fill="{StaticResource RadioButton.Static.Glyph}" MinWidth="6" MinHeight="6" Opacity="0"/>
+                                </Grid>
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter" Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource OptionMarkFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,-1,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.MouseOver.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource RadioButton.MouseOver.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Disabled.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource RadioButton.Disabled.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource RadioButton.Pressed.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="0.56"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    <Grid>
+    <Grid DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="43*"/>
-            <ColumnDefinition Width="122*"/>
+            <ColumnDefinition Width="67*"/>
+            <ColumnDefinition Width="181*"/>
+            <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="90*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="393*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="397*"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="55*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="stopButton" Content="Stop" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Click="stopButton_Click" Height="20" Grid.Column="1" Grid.Row="4" Grid.RowSpan="2"/>
+        <Button x:Name="stopButton" Content="Stop" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Click="stopButton_Click" Height="20" Grid.Column="1" Grid.Row="4"/>
         <Grid Grid.Column="2" Margin="0,20,0,10">
             <Grid.RowDefinitions>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="265*"/>
+                <ColumnDefinition/>
                 <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="174*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="openButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Click="openButton_Click" Height="20" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Button x:Name="openButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Click="openButton_Click" Height="20" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2" Command="{Binding EventHub.Open}"/>
             <Label x:Name="label" Content="Connection String:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label x:Name="label1" Content="Event Hub:" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1"/>
-            <TextBox x:Name="txtConnectionString" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="2"/>
-            <TextBox x:Name="txtEventHub" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2"/>
+            <TextBox x:Name="txtConnectionString" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="2" Text="{Binding EventHub.EventHubConnectionString}"/>
+            <TextBox x:Name="txtEventHub" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Text="{Binding EventHub.HubName}"/>
+            <Grid Grid.Column="2" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <GroupBox x:Name="groupBox" Header="CheckPoint:" VerticalAlignment="Top">
+                    <GroupBox.Content>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <RadioButton GroupName="Checkpoints" Grid.Row="0" x:Name="radioButton" Content="Start of Partition" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                            <RadioButton GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="1" x:Name="radioButton1"   >
+                                <StackPanel Margin="0,0,0,1" Orientation="Horizontal" Grid.Row="1">
+                                    <Label Content="Start "/>
+                                    <TextBox Text="1" Width="20"/>
+                                    <Label Content=" Minutes in the Past "/>
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="2" x:Name="radioButton4"   >
+                                <StackPanel Margin="0,0,0,1" Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center">
+                                    <Label Content="Start "/>
+                                    <TextBox Text="1" Width="20"/>
+                                    <Label Content=" Messages in the Past "/>
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton GroupName="Checkpoints" Grid.Row="3" x:Name="radioButton2" Content="Now" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True" Checked="checkPoint_Checked"/>
+                        </Grid>
+                    </GroupBox.Content>
+                </GroupBox>
+
+            </Grid>
+
         </Grid>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Partitions:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"/>
-        <ListView x:Name="partitionList" Grid.Row="2" Grid.Column="1" ItemTemplate="{DynamicResource PartitionTemplate}" ItemContainerStyle="{DynamicResource StretchContainterStyle}" SelectionChanged="partitionList_SelectionChanged"/>
-        <ProgressBar x:Name="progressBar" Grid.ColumnSpan="3" Height="5" VerticalAlignment="Bottom" IsIndeterminate="True" Visibility="Hidden"/>
-        <Button x:Name="openAllButton" Grid.ColumnSpan="2" Content="Open All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="4" Grid.Column="1" Click="openAllButton_Click"/>
-        <ListView x:Name="messageList" Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="21,0,0,0"/>
+        <ListView x:Name="partitionList" Grid.Row="2" Grid.Column="1" ItemTemplate="{DynamicResource PartitionTemplate}" ItemContainerStyle="{DynamicResource StretchContainterStyle}" SelectionChanged="partitionList_SelectionChanged" ItemsSource="{Binding EventHub.Partitions}"/>
+        <ProgressBar x:Name="progressBar" Grid.ColumnSpan="4" Height="5" VerticalAlignment="Bottom" IsIndeterminate="True" Visibility="Hidden"/>
+        <Button x:Name="openAllButton" Content="Read All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="4" Grid.Column="1" Command="{Binding EventHub.ReadAll}"/>
+        <ListView x:Name="messageList" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="20,0,0,0" ItemsSource="{Binding EventHub.Messages}"/>
         <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2"/>
 
     </Grid>
