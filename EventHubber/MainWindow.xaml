@@ -152,8 +152,8 @@
             <Button x:Name="openButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Click="openButton_Click" Height="20" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2" Command="{Binding EventHub.Open}"/>
             <Label x:Name="label" Content="Connection String:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label x:Name="label1" Content="Event Hub:" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1"/>
-            <TextBox x:Name="txtConnectionString" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="2" Text="{Binding EventHub.EventHubConnectionString}"/>
-            <TextBox x:Name="txtEventHub" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Text="{Binding EventHub.HubName}"/>
+            <TextBox x:Name="txtConnectionString" TextWrapping="Wrap" Grid.Column="2" Text="{Binding EventHub.EventHubConnectionString}" Margin="0,0,0,10"/>
+            <TextBox x:Name="txtEventHub" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Text="{Binding EventHub.HubName}"/>
             <Grid Grid.Column="2" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>

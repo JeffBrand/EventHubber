@@ -64,6 +64,8 @@ namespace EventHubber.Services
                 _foundPartitions.OnNext(partition);
             }
 
+            
+
         }
 
         public async Task ReadAllAsync(DateTime startTime)
