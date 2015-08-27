@@ -30,8 +30,12 @@ namespace EventHubber.Services
         Subject<PartitionRuntimeInformation> _foundPartitions = new Subject<PartitionRuntimeInformation>();
         Subject<EventHubMessage> _messages = new Subject<EventHubMessage>();
 
+
+        public bool IsReading { get; private set; }
         public IObservable<PartitionRuntimeInformation> PartitionFound { get { return _foundPartitions; } }
         public IObservable<EventHubMessage> MessageReceived { get { return _messages; } }
+
+        public bool IsOpen { get; private set; }
 
         public EventHubService()
         {
@@ -39,32 +43,33 @@ namespace EventHubber.Services
             
         }
 
-        public async Task OpenEventHubAsync(string eventHubConnectionString, string hubName)
+        public  Task OpenEventHubAsync(string eventHubConnectionString, string hubName)
         {
-            if (string.IsNullOrWhiteSpace(eventHubConnectionString))
-                throw new ArgumentException("invalid event hub connection string");
+            return Task.Factory.StartNew(async () => {
+                if (string.IsNullOrWhiteSpace(eventHubConnectionString))
+                    throw new ArgumentException("invalid event hub connection string");
 
-            if (string.IsNullOrWhiteSpace(hubName))
-                throw new ArgumentException("invalid hubname");
+                if (string.IsNullOrWhiteSpace(hubName))
+                    throw new ArgumentException("invalid hubname");
 
-            var builder = new ServiceBusConnectionStringBuilder(eventHubConnectionString) { TransportType = TransportType.Amqp };
-            var s = builder.ToString();
-            _factory = MessagingFactory.CreateFromConnectionString(builder.ToString());
-            //Partitions = new ObservableCollection<PartitionViewModel>();
-            //Messages = new ObservableCollection<MessageViewModel>();
+                var builder = new ServiceBusConnectionStringBuilder(eventHubConnectionString) { TransportType = TransportType.Amqp };
+                var s = builder.ToString();
+                _factory = MessagingFactory.CreateFromConnectionString(builder.ToString());
+       
+                _client = _factory.CreateEventHubClient(hubName);
+                var runtimeInfo = await _client.GetRuntimeInformationAsync();
 
-            _client = _factory.CreateEventHubClient(hubName);var runtimeInfo = await _client.GetRuntimeInformationAsync();
-
-            _partitions.Clear();
-            foreach (var p in runtimeInfo.PartitionIds)
-            {
+                _partitions.Clear();
+                foreach (var p in runtimeInfo.PartitionIds)
+                {
                 
-                var partition = await _client.GetPartitionRuntimeInformationAsync(p);
-                _partitions.Add(new Partition(p, _messages));
-                _foundPartitions.OnNext(partition);
-            }
+                    var partition = await _client.GetPartitionRuntimeInformationAsync(p);
+                    _partitions.Add(new Partition(p, _messages));
+                    _foundPartitions.OnNext(partition);
+                }
 
-            
+                this.IsOpen = true;
+            });
 
         }
 
@@ -91,8 +96,7 @@ namespace EventHubber.Services
 
         public async Task ReadAllAsync(TimeSpan offset)
         {
-            var time = DateTime.Now.Subtract(offset);
-            ReadAllAsync(time);
+            ReadAllAsync(DateTime.Now.Subtract(offset));
         }
 
         public async Task ReadAllAsync(long offset)
@@ -106,6 +110,40 @@ namespace EventHubber.Services
             }
         }
 
+        public async Task ReadAsync(string partitionId, DateTime startTime)
+        {
+            if (string.IsNullOrWhiteSpace(partitionId))
+                throw new ArgumentNullException("partition id cannot be null or empty");
+
+            var partition = (from p in _partitions where p.PartitionId == partitionId select p).FirstOrDefault();
+            if (partition == null)
+                throw new InvalidOperationException("partition not found");
+
+            PrepareToRead();
+            var rcv = await _client.GetDefaultConsumerGroup().CreateReceiverAsync(partitionId, startTime.ToUniversalTime());
+            _runningTasks.Add(partition.ReadAsync(rcv, _cancellation));
+
+        }
+
+        public async Task ReadAsync(string partitionId, TimeSpan offset)
+        {
+            ReadAsync(partitionId, DateTime.Now.Subtract(offset));
+        }
+
+        public async Task ReadAsync(string partitionId, long offset)
+        {
+            if (!string.IsNullOrWhiteSpace(partitionId))
+                throw new ArgumentNullException("partition id cannot be null or empty");
+
+            var partition = (from p in _partitions where p.PartitionId == partitionId select p).FirstOrDefault();
+            if (partition == null)
+                throw new InvalidOperationException("partition not found");
+
+            PrepareToRead();
+            var rcv = await _client.GetDefaultConsumerGroup().CreateReceiverAsync(partitionId, offset.ToString());
+            _runningTasks.Add(partition.ReadAsync(rcv, _cancellation));
+        }
+
         private void PrepareToRead()
         {
             _receiving = true;
@@ -113,6 +151,8 @@ namespace EventHubber.Services
                 _cancellation = new CancellationTokenSource();
 
             _runningTasks.Clear();
+            IsReading = true;
+            
         }
 
         public void Stop()
@@ -123,8 +163,9 @@ namespace EventHubber.Services
                 Task.WaitAll(_runningTasks.ToArray());
                 _cancellation = null;
             }
+            IsReading = false;
             Debug.WriteLine("Finished");
-            //_runningTasks.Clear();
+            
             
         }
     }
