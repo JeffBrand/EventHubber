@@ -168,7 +168,9 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <RadioButton Tag="Start" GroupName="Checkpoints" Grid.Row="0" x:Name="radioButton" Content="Start of Partition" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="checkPoint_Checked"/>
+                            <RadioButton Tag="Start" GroupName="Checkpoints" Grid.Row="0" x:Name="radioButton" VerticalContentAlignment="Center"  HorizontalAlignment="Left" VerticalAlignment="Top" Checked="checkPoint_Checked">
+                                <Label Content="Start of Partition"/>
+                            </RadioButton>
 
                             <RadioButton  Tag="Minutes" GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="1" x:Name="radioButton1" Checked="checkPoint_Checked"   >
                                 <StackPanel Orientation="Horizontal" Grid.Row="1">
@@ -184,7 +186,9 @@
                                     <Label Content=" Messages in the Past "/>
                                 </StackPanel>
                             </RadioButton>
-                            <RadioButton Tag="Now" GroupName="Checkpoints" Grid.Row="3" x:Name="radioButton2" Content="Now" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True" Checked="checkPoint_Checked"/>
+                            <RadioButton Tag="Now" GroupName="Checkpoints" Grid.Row="3" x:Name="radioButton2"  HorizontalAlignment="Left" VerticalContentAlignment="Center"  VerticalAlignment="Top" IsChecked="True" Checked="checkPoint_Checked">
+                                <Label Content="Now" />
+                            </RadioButton>
                         </Grid>
                     </GroupBox.Content>
                 </GroupBox>
