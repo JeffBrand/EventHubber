@@ -1,0 +1,82 @@
+﻿<Window x:Class="EventHubber.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EventHubber"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800">
+    <Window.Resources>
+        <DataTemplate x:Key="PartitionTemplate">
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1">
+                <Grid HorizontalAlignment="Stretch" Height="50" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="12*"/>
+                        <RowDefinition Height="13*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding PartitionId}" VerticalAlignment="Center" FontSize="18.667"  />
+                    <TextBlock  VerticalAlignment="Center" FontSize="18.667" Grid.Row="1" >
+                        <Run Text="Message Count: "/><Run Text="{Binding MessageCount}"/>
+                    </TextBlock>
+
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <Style x:Key="StretchContainterStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
+
+
+        </Style>
+        <DataTemplate x:Key="MessageTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="label" Content="{Binding PartitionId}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Stretch" Grid.Column="1"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="43*"/>
+            <ColumnDefinition Width="122*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="393*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="55*"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="stopButton" Content="Stop" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Click="stopButton_Click" Height="20" Grid.Column="1" Grid.Row="4" Grid.RowSpan="2"/>
+        <Grid Grid.Column="2" Margin="0,20,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="265*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="174*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="openButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Click="openButton_Click" Height="20" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Label x:Name="label" Content="Connection String:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label x:Name="label1" Content="Event Hub:" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1"/>
+            <TextBox x:Name="txtConnectionString" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="2"/>
+            <TextBox x:Name="txtEventHub" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2"/>
+        </Grid>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Partitions:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"/>
+        <ListView x:Name="partitionList" Grid.Row="2" Grid.Column="1" ItemTemplate="{DynamicResource PartitionTemplate}" ItemContainerStyle="{DynamicResource StretchContainterStyle}" SelectionChanged="partitionList_SelectionChanged"/>
+        <ProgressBar x:Name="progressBar" Grid.ColumnSpan="3" Height="5" VerticalAlignment="Bottom" IsIndeterminate="True" Visibility="Hidden"/>
+        <Button x:Name="openAllButton" Grid.ColumnSpan="2" Content="Open All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="4" Grid.Column="1" Click="openAllButton_Click"/>
+        <ListView x:Name="messageList" Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="21,0,0,0"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2"/>
+
+    </Grid>
+</Window>
