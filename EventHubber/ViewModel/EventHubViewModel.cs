@@ -25,15 +25,16 @@ namespace EventHubber.ViewModel
     {
         IEventHubService _service;
 
+        public bool SaveSettings { get; set; }
 
- 
         public string EventHubConnectionString {
             get {
                 return Properties.Settings.Default["eventhubConnectionString"] as string; }
             set {
                 
                 Properties.Settings.Default["eventhubConnectionString"] = value;
-                Properties.Settings.Default.Save();
+                if (SaveSettings)
+                    Properties.Settings.Default.Save();
             } }
         public string HubName
         {
@@ -45,7 +46,8 @@ namespace EventHubber.ViewModel
             {
               
                 Properties.Settings.Default["hubName"] = value;
-                Properties.Settings.Default.Save();
+                if (SaveSettings)
+                    Properties.Settings.Default.Save();
             }
         }
 
@@ -82,6 +84,8 @@ namespace EventHubber.ViewModel
 
         public EventHubViewModel(IEventHubService service)
         {
+            this.SaveSettings = true;
+
             _service = service;
             this.Partitions = new ObservableCollection<PartitionViewModel>();
             this.Messages = new ObservableCollection<MessageViewModel>();
