@@ -36,6 +36,7 @@ namespace EventHubber.Services
         public IObservable<EventHubMessage> MessageReceived { get { return _messages; } }
 
         public bool IsOpen { get; private set; }
+        public long MessageCount { get; private set; }
 
         public EventHubService()
         {
@@ -45,13 +46,14 @@ namespace EventHubber.Services
 
         public  Task OpenEventHubAsync(string eventHubConnectionString, string hubName)
         {
-            this.IsOpen = true;
+            
             return Task.Factory.StartNew(async () => {
                 if (string.IsNullOrWhiteSpace(eventHubConnectionString))
                     throw new ArgumentException("invalid event hub connection string");
 
                 if (string.IsNullOrWhiteSpace(hubName))
                     throw new ArgumentException("invalid hubname");
+                this.IsOpen = true;
 
                 var builder = new ServiceBusConnectionStringBuilder(eventHubConnectionString) { TransportType = TransportType.Amqp };
                 var s = builder.ToString();
@@ -66,11 +68,15 @@ namespace EventHubber.Services
                 {
                 
                     var partition = await _client.GetPartitionRuntimeInformationAsync(p);
+                    var count = partition.LastEnqueuedSequenceNumber - partition.BeginSequenceNumber;
+                    if (count != 0)
+                        count++;
+                    this.MessageCount = count;
                     _partitions.Add(new Partition(p, _messages));
                     _foundPartitions.OnNext(partition);
                 }
 
-
+                
             });
 
         }

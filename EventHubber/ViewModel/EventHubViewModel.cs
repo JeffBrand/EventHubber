@@ -63,6 +63,34 @@ namespace EventHubber.ViewModel
             }
 
         }
+
+
+        long _totalMessageCount;
+        public long TotalMessageCount
+        {
+            get { return _totalMessageCount; }
+            set
+            {
+                if (_totalMessageCount == value)
+                    return;
+                _totalMessageCount = value;
+                RaisePropertyChanged("TotalMessageCount");
+            }
+        }
+
+
+        long _numMessageReceived;
+        public long NumberOfMessagesReceived
+        {
+            get { return _numMessageReceived; }
+            set
+            {
+                if (_numMessageReceived == value)
+                    return;
+                _numMessageReceived = value;
+                RaisePropertyChanged("NumberOfMessagesReceived");
+            }
+        }
         public int PastMinutes { get; set; }
         public int PastMessages { get; set; }
 
@@ -93,6 +121,7 @@ namespace EventHubber.ViewModel
             _service.PartitionFound.Subscribe((p) =>
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(()=> {
+                    this.TotalMessageCount = _service.MessageCount;
                     Partitions.Add(new PartitionViewModel(p));
                 }), null);
             });
@@ -101,6 +130,7 @@ namespace EventHubber.ViewModel
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(() => {
                     Messages.Insert(0,new MessageViewModel(m));
+                    NumberOfMessagesReceived++;
                 }), null);
             });
             SetupCommands();

@@ -28,7 +28,6 @@ namespace EventHubber.ViewModel
 
         public PartitionViewModel(PartitionRuntimeInformation info)
         {
-           
             this.PartitionId = info.PartitionId;
             BeginSequenceNumber = info.BeginSequenceNumber;
             LastSequenceNumber = info.LastEnqueuedSequenceNumber;

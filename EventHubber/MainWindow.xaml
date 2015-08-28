@@ -113,7 +113,10 @@
             <CheckBox x:Name="checkBox" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="4" IsChecked="{Binding EventHub.SaveSettings}" Content="Save"/>
 
         </Grid>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Partitions:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Partitions:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1">
+            <Run Text="Partions Message Count: "/>
+            <Run Text="{Binding EventHub.TotalMessageCount}"/>
+        </TextBlock>
         <ListView x:Name="partitionList" Grid.Row="2" Grid.Column="1" ItemTemplate="{DynamicResource PartitionTemplate}" ItemContainerStyle="{DynamicResource StretchContainterStyle}" SelectionChanged="partitionList_SelectionChanged" ItemsSource="{Binding EventHub.Partitions}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
@@ -124,7 +127,11 @@
         <ProgressBar x:Name="progressBar" Grid.ColumnSpan="4" Height="5" VerticalAlignment="Bottom" IsIndeterminate="True" Visibility="Hidden"/>
         <Button x:Name="openAllButton" Content="Read All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="4" Grid.Column="1" Command="{Binding EventHub.ReadAll}"/>
         <ListView x:Name="messageList" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="20,0,0,0" ItemsSource="{Binding EventHub.Messages}"/>
-        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Margin="20,0,0,0"/>
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Right" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.Row="4" Grid.Column="2">
+            <Run Text="Messages Received: "/>
+            <Run Text="{Binding EventHub.NumberOfMessagesReceived}"/>
+        </TextBlock>
 
     </Grid>
 </Window>

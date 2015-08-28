@@ -9,6 +9,7 @@ namespace EventHubber.Services
     {
         bool IsReading { get; }
         bool IsOpen{ get; }
+        long MessageCount { get; }
 
         IObservable<PartitionRuntimeInformation> PartitionFound { get; }
         IObservable<EventHubMessage> MessageReceived{ get; }
