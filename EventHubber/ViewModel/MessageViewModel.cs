@@ -14,20 +14,24 @@ namespace EventHubber.ViewModel
     {
         public EventHubViewModel EventHub { get; set; }
 
-        public MessageViewModel(EventHubMessage msg) : this(msg.PartitionId, msg.MessageBody)
+        public MessageViewModel(EventHubMessage msg) 
         {
-
+            this.PartitionId = msg.PartitionId;
+            this.Message = msg.MessageBody;
+            this.Publisher = msg.Publisher;
+            this.EnqueueTimeStamp = msg.EnqueueTimeStamp;
+            this.Offset = msg.Offset;
+            this.SequenceNumber = msg.SequenceNumber;
         }
 
-        public MessageViewModel(string partitionId, string message)
-        {
-            this.PartitionId = partitionId;
-            this.Message = message;
-
-            
-        }
+       
 
         public string Message { get; private set; }
         public string PartitionId { get; private set; }
+        public string Publisher { get; private set; }
+        public DateTime EnqueueTimeStamp { get; private set; }
+        public string Body { get; private set; }
+        public long SequenceNumber { get; private set; }
+        public string Offset { get; private set; }
     }
 }

@@ -46,6 +46,7 @@ namespace EventHubber.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<EventHubViewModel>();
             SimpleIoc.Default.Register<IEventHubService, EventHubService>();
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
         }
 
         public MainViewModel Main

@@ -1,4 +1,6 @@
+using EventHubber.Services;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 
 namespace EventHubber.ViewModel
@@ -17,10 +19,16 @@ namespace EventHubber.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        private IDialogService _dialogService;
+
         public EventHubViewModel EventHub { get; set; }
-        public MainViewModel()
+
+        public RelayCommand<MessageViewModel> ShowMessage { get; set; }
+
+        public MainViewModel(IDialogService dialogService)
         {
             this.EventHub = SimpleIoc.Default.GetInstance<EventHubViewModel>();
+            _dialogService = dialogService;
             ////if (IsInDesignMode)
             ////{
             ////    // Code runs in Blend --> create design time data.
@@ -29,6 +37,11 @@ namespace EventHubber.ViewModel
             ////{
             ////    // Code runs "for real"
             ////}
+
+            this.ShowMessage = new RelayCommand<MessageViewModel>((msg) =>
+            {
+                _dialogService.ShowDialog("Message", msg);
+            });
         }
     }
 }

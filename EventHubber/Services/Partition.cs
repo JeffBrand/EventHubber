@@ -29,16 +29,13 @@ namespace EventHubber.Services
                 Debug.WriteLine(string.Format("partition {0} started", PartitionId));
                
                 
-                string offset;
                 while (!cancellation.IsCancellationRequested)
                 {
                     var message = await receiver.ReceiveAsync(TimeSpan.FromSeconds(5));
                     
                     if (message != null)
                     {
-                        offset = message.Offset;
-                        var body = Encoding.UTF8.GetString(message.GetBytes());
-                        _messages.OnNext(new EventHubMessage() { PartitionId = PartitionId, MessageBody = body });
+                        _messages.OnNext(new EventHubMessage(receiver.PartitionId,message));
                     }
 
 

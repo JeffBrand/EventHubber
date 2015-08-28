@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EventHubber"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" x:Class="EventHubber.MainWindow"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:Converters="clr-namespace:EventHubber.Converters" x:Class="EventHubber.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
     <Window.Resources>
+        <Converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
         <DataTemplate x:Key="PartitionTemplate">
             <Border BorderBrush="Black" BorderThickness="0,0,0,1">
                 <Grid HorizontalAlignment="Stretch" Height="50" >
@@ -37,7 +38,7 @@
                 <TextBlock x:Name="textBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Stretch" Grid.Column="1"/>
             </Grid>
         </DataTemplate>
-        
+
     </Window.Resources>
     <Grid x:Name="rootGrid" DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
         <Grid.ColumnDefinitions>
@@ -77,7 +78,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <GroupBox x:Name="groupBox" Header="CheckPoint:" VerticalAlignment="Top">
+                <GroupBox x:Name="groupBox" Header="CheckPoint:" VerticalAlignment="Top" IsEnabled="{Binding EventHub.IsReading, Converter={StaticResource InverseBoolConverter}}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -113,10 +114,7 @@
             <CheckBox x:Name="checkBox" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="4" IsChecked="{Binding EventHub.SaveSettings}" Content="Save"/>
 
         </Grid>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Partitions:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1">
-            <Run Text="Partions Message Count: "/>
-            <Run Text="{Binding EventHub.TotalMessageCount}"/>
-        </TextBlock>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"><Run Text="Partions Message Count: "/><Run Text=" "/><Run Text="{Binding EventHub.TotalMessageCount}"/></TextBlock>
         <ListView x:Name="partitionList" Grid.Row="2" Grid.Column="1" ItemTemplate="{DynamicResource PartitionTemplate}" ItemContainerStyle="{DynamicResource StretchContainterStyle}" SelectionChanged="partitionList_SelectionChanged" ItemsSource="{Binding EventHub.Partitions}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
@@ -126,12 +124,15 @@
         </ListView>
         <ProgressBar x:Name="progressBar" Grid.ColumnSpan="4" Height="5" VerticalAlignment="Bottom" IsIndeterminate="True" Visibility="Hidden"/>
         <Button x:Name="openAllButton" Content="Read All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="4" Grid.Column="1" Command="{Binding EventHub.ReadAll}"/>
-        <ListView x:Name="messageList" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="20,0,0,0" ItemsSource="{Binding EventHub.Messages}"/>
+        <ListView x:Name="messageList" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="20,0,0,0" ItemsSource="{Binding EventHub.Messages}" SelectionChanged="messageList_SelectionChanged">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding ShowMessage}" CommandParameter="{Binding SelectedItem, ElementName=messageList}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListView>
         <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Margin="20,0,0,0"/>
-        <TextBlock x:Name="textBlock1" HorizontalAlignment="Right" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.Row="4" Grid.Column="2">
-            <Run Text="Messages Received: "/>
-            <Run Text="{Binding EventHub.NumberOfMessagesReceived}"/>
-        </TextBlock>
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Right" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.Row="4" Grid.Column="2"><Run Text="Messages Received: "/><Run Text=" "/><Run Text="{Binding EventHub.NumberOfMessagesReceived}"/></TextBlock>
 
     </Grid>
 </Window>

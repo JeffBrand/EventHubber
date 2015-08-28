@@ -51,6 +51,20 @@ namespace EventHubber.ViewModel
             }
         }
 
+
+        bool _isReading;
+        public bool IsReading
+        {
+            get { return _isReading; }
+            set
+            {
+                if (_isReading == value)
+                    return;
+                _isReading = value;
+                RaisePropertyChanged("IsReading");
+            }
+        }
+
         CheckPointTypes _checkpoint;
         public CheckPointTypes CheckPoint
         {
@@ -146,8 +160,9 @@ namespace EventHubber.ViewModel
                 UpdateCommands();
             });
 
-            this.ReadAll = new RelayCommand(() => {
-                this.Messages.Clear();
+            this.ReadAll = new RelayCommand(() =>
+            {
+                ResetReading();
                 switch (CheckPoint)
                 {
                     case CheckPointTypes.Start:
@@ -163,17 +178,15 @@ namespace EventHubber.ViewModel
                     default:
                         break;
                 }
+                IsReading = true;
                 UpdateCommands();
-            },()=> {
+            }, ()=> {
 
                 return !_service.IsReading && _service.IsOpen;
             });
 
             this.Read = new RelayCommand<PartitionViewModel>((p) => {
-                if (_service.IsReading)
-                    StopReading();
-
-                this.Messages.Clear();
+                ResetReading();
                 switch (CheckPoint)
                 {
                     case CheckPointTypes.Start:
@@ -189,12 +202,9 @@ namespace EventHubber.ViewModel
                     default:
                         break;
                 }
+                IsReading = true;
                 UpdateCommands();
             }
-            //, 
-            //    (p) => {
-            //    return !_service.IsReading && _service.IsOpen;
-            //}
                 );
 
             this.Stop = new RelayCommand(() =>
@@ -203,11 +213,18 @@ namespace EventHubber.ViewModel
             }, ()=>{ return _service.IsReading; });
         }
 
+        private void ResetReading()
+        {
+            if (_service.IsReading)
+                StopReading();
+            this.Messages.Clear();
+        }
+
         private void StopReading()
         {
             if (!_service.IsReading)
                 return;
-
+            IsReading = false;
             _service.Stop();
             UpdateCommands();
         }

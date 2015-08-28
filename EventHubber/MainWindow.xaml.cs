@@ -88,5 +88,10 @@ namespace EventHubber
                     
             }
         }
+
+        private void messageList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
