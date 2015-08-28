@@ -33,6 +33,7 @@ namespace EventHubber.Services
                 while (!cancellation.IsCancellationRequested)
                 {
                     var message = await receiver.ReceiveAsync(TimeSpan.FromSeconds(5));
+                    
                     if (message != null)
                     {
                         offset = message.Offset;

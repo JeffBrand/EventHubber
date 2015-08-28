@@ -45,6 +45,7 @@ namespace EventHubber.Services
 
         public  Task OpenEventHubAsync(string eventHubConnectionString, string hubName)
         {
+            this.IsOpen = true;
             return Task.Factory.StartNew(async () => {
                 if (string.IsNullOrWhiteSpace(eventHubConnectionString))
                     throw new ArgumentException("invalid event hub connection string");
@@ -68,7 +69,7 @@ namespace EventHubber.Services
                     _foundPartitions.OnNext(partition);
                 }
 
-                this.IsOpen = true;
+
             });
 
         }
