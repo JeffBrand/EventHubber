@@ -58,6 +58,7 @@ namespace EventHubber.Services
                 _factory = MessagingFactory.CreateFromConnectionString(builder.ToString());
        
                 _client = _factory.CreateEventHubClient(hubName);
+                
                 var runtimeInfo = await _client.GetRuntimeInformationAsync();
 
                 _partitions.Clear();
@@ -169,5 +170,7 @@ namespace EventHubber.Services
             
             
         }
+
+        
     }
 }
