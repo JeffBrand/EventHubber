@@ -32,10 +32,12 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="label" Text="{Binding PartitionId}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,20,0"/>
-                <TextBlock x:Name="textBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Stretch" Grid.Column="1"/>
+                <TextBlock x:Name="label2" Grid.Column="1" Text="{Binding Publisher}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,20,0"/>
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="{Binding Message}" VerticalAlignment="Stretch" Grid.Column="2"/>
             </Grid>
         </DataTemplate>
 
@@ -133,6 +135,16 @@
         </ListView>
         <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Margin="20,0,0,0"/>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Right" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.Row="4" Grid.Column="2"><Run Text="Messages Received: "/><Run Text=" "/><Run Text="{Binding EventHub.NumberOfMessagesReceived}"/></TextBlock>
+        <Grid Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Publisher: "/>
+            <TextBox Grid.Column="1" x:Name="txtDeviceId" HorizontalAlignment="Left" Height="18" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="150"/>
+            <Button Grid.Column="2" Content="Find" Margin="20,0,0,0" Command="{Binding EventHub.FindPublisher}" CommandParameter="{Binding Text, ElementName=txtDeviceId}"/>
+        </Grid>
 
     </Grid>
 </Window>

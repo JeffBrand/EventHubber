@@ -122,6 +122,8 @@ namespace EventHubber.ViewModel
 
         public RelayCommand<PartitionViewModel> Read { get; set; }
 
+        public RelayCommand<string> FindPublisher { get; set; }
+
         public RelayCommand Stop { get; set; }
 
         public EventHubViewModel(IEventHubService service)
@@ -206,6 +208,20 @@ namespace EventHubber.ViewModel
                 UpdateCommands();
             }
                 );
+
+            this.FindPublisher = new RelayCommand<string>((publisher) =>
+            {
+                if (string.IsNullOrWhiteSpace(publisher))
+                    return;
+
+                var found = (from m in Messages where m.Publisher == publisher select m).ToList();
+                Messages.Clear();
+                foreach (var f in found)
+                {
+                    Messages.Add(f);
+                }
+
+            });
 
             this.Stop = new RelayCommand(() =>
             {
