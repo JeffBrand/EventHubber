@@ -23,6 +23,8 @@ namespace EventHubber.ViewModel
 
     public class EventHubViewModel : ViewModelBase
     {
+        private readonly int DEFAULT_MESSAGE_PER_PARTIION = 100;
+
         IEventHubService _service;
         IDisposable _partitionSubscription;
 
@@ -107,6 +109,7 @@ namespace EventHubber.ViewModel
 
 
         long _numMessageReceived;
+
         public long NumberOfMessagesReceived
         {
             get { return _numMessageReceived; }
@@ -145,6 +148,9 @@ namespace EventHubber.ViewModel
         public EventHubViewModel(IEventHubService service)
         {
             this.SaveSettings = true;
+            this.PastMinutes = 1;
+            this.PastMessages = 1;
+            this.MessagePerPartition = DEFAULT_MESSAGE_PER_PARTIION;
 
             _service = service;
             this.Partitions = new ObservableCollection<PartitionViewModel>();
@@ -168,9 +174,10 @@ namespace EventHubber.ViewModel
         private void SetupCommands()
         {
             this.Open = new RelayCommand(async () => {
+                this.IsOpening = true;
                 this.Partitions.Clear();
                 this.Messages.Clear();
-                this.IsOpening = true;
+                
                 _partitionSubscription = _service.PartitionFound.Subscribe((p) =>
                 {
                     App.Current.Dispatcher.BeginInvoke(new Action(() => {
@@ -200,8 +207,10 @@ namespace EventHubber.ViewModel
                         _service.ReadAllAsync(DateTime.Now);
                         break;
                     case CheckPointTypes.PastMinutes:
+                        _service.ReadAllAsync(TimeSpan.FromMinutes(this.PastMinutes));
                         break;
                     case CheckPointTypes.PastMessages:
+                        _service.ReadAllAsync(this.PastMessages);
                         break;
                     default:
                         break;

@@ -96,14 +96,14 @@
                         <RadioButton  Tag="Minutes" GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="1" x:Name="radioButton1" Checked="checkPoint_Checked" Margin="0,0,0,5"   >
                             <StackPanel Orientation="Horizontal" Grid.Row="1">
                                 <Label Content="Start "/>
-                                <TextBox Text="1" Width="20"/>
+                                <TextBox Text="{Binding EventHub.PastMinutes}" Width="20"/>
                                 <Label Content=" Minutes in the Past "/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Tag="Messages" GroupName="Checkpoints" VerticalContentAlignment="Center" Grid.Row="2" x:Name="radioButton4" Checked="checkPoint_Checked" Margin="0,0,0,5"   >
                             <StackPanel  Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center">
                                 <Label Content="Start "/>
-                                <TextBox Text="1" Width="20"/>
+                                <TextBox Text="{Binding EventHub.PastMessages}" Width="20"/>
                                 <Label Content=" Messages in the Past "/>
                             </StackPanel>
                         </RadioButton>
@@ -114,7 +114,7 @@
                 </GroupBox>
                 <StackPanel Grid.Column="1">
                     <TextBlock x:Name="textBlock2" TextWrapping="Wrap" Text="Msgs per Partition:"/>
-                    <TextBox Text="100"/>
+                    <TextBox Text="{Binding EventHub.MessagePerPartition}"/>
                 </StackPanel>
 
             </Grid>
@@ -138,7 +138,9 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </ListView>
-        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Margin="20,0,0,0"/>
+        <StackPanel Grid.Column="2" Margin="19.5,0,461,4" Orientation="Horizontal" Grid.Row="1">
+            <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top"/>
+        </StackPanel>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Right" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.Row="4" Grid.Column="2"><Run Text="Messages Received: "/><Run Text=" "/><Run Text="{Binding EventHub.NumberOfMessagesReceived}"/></TextBlock>
         <Grid Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
