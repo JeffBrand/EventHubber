@@ -24,6 +24,7 @@ namespace EventHubber.ViewModel
     public class EventHubViewModel : ViewModelBase
     {
         IEventHubService _service;
+        IDisposable _partitionSubscription;
 
         public bool SaveSettings { get; set; }
 
@@ -65,6 +66,18 @@ namespace EventHubber.ViewModel
             }
         }
 
+        bool _isOpening;
+        public bool IsOpening
+        {
+            get { return _isOpening; }
+            set
+            {
+                if (_isOpening == value)
+                    return;
+                _isOpening = value;
+                RaisePropertyChanged("IsOpening");
+            }
+        }
         CheckPointTypes _checkpoint;
         public CheckPointTypes CheckPoint
         {
@@ -137,13 +150,7 @@ namespace EventHubber.ViewModel
             this.Partitions = new ObservableCollection<PartitionViewModel>();
             this.Messages = new ObservableCollection<MessageViewModel>();
 
-            _service.PartitionFound.Subscribe((p) =>
-            {
-                App.Current.Dispatcher.BeginInvoke(new Action(()=> {
-                    this.TotalMessageCount = _service.MessageCount;
-                    Partitions.Add(new PartitionViewModel(p));
-                }), null);
-            });
+            
 
             _service.MessageReceived.Subscribe((m) =>
             {
@@ -163,6 +170,20 @@ namespace EventHubber.ViewModel
             this.Open = new RelayCommand(async () => {
                 this.Partitions.Clear();
                 this.Messages.Clear();
+                this.IsOpening = true;
+                _partitionSubscription = _service.PartitionFound.Subscribe((p) =>
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(() => {
+                        this.TotalMessageCount = _service.MessageCount;
+                        Partitions.Add(new PartitionViewModel(p));
+                    }), null);
+                }, 
+                ()=> {
+                    App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        this.IsOpening = false;
+                    }));
+                });
                 await _service.OpenEventHubAsync(EventHubConnectionString, HubName);
                 UpdateCommands();
             });

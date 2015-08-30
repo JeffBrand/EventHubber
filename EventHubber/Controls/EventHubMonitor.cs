@@ -1,5 +1,8 @@
-﻿using System;
+﻿using EventHubber.ViewModel;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,33 +49,70 @@ namespace EventHubber.Controls
     /// </summary>
     /// [
     /// 
-    [TemplatePart(Name= EventHubNameLabel, Type =typeof(Label))]
+
+    [TemplatePart(Name = RootGrid, Type = typeof(Grid))]
     public class EventHubMonitor : Control
     {
         bool _isReady;
+  
+        const string RootGrid = "RootGrid";
 
-        const string EventHubNameLabel = "lblEventHubName";
-        Label _lblEventHubName;
+        Grid _rootGrid;
+        List<StackPanel> _partitions = new List<StackPanel>();
 
 
-        public string EventHubName
+       
+        public IEnumerable<PartitionViewModel> Partitions
         {
-            get { return (string)GetValue(EventHubNameProperty); }
-            set { SetValue(EventHubNameProperty, value); }
+            get { return (IEnumerable<PartitionViewModel>)GetValue(PartitionsProperty); }
+            set { SetValue(PartitionsProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for EventHubName.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty EventHubNameProperty =
-            DependencyProperty.Register("EventHubName", typeof(string), typeof(EventHubMonitor), new PropertyMetadata(string.Empty, OnEventHubNameChange));
+        // Using a DependencyProperty as the backing store for Partitions.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PartitionsProperty =
+            DependencyProperty.Register("Partitions", typeof(IEnumerable<PartitionViewModel>), typeof(EventHubMonitor), new PropertyMetadata(null, OnPartitionChange));
 
-        private static void OnEventHubNameChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnPartitionChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as EventHubMonitor;
-            if (control != null && control._lblEventHubName != null)
+            if (control != null)
             {
-                control._lblEventHubName.Content = e.NewValue as string;
+                control.OnItemsSourceChanged((IEnumerable)e.OldValue, (IEnumerable)e.NewValue);
             }
         }
+
+        private void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            // Remove handler for oldValue.CollectionChanged
+            var oldValueINotifyCollectionChanged = oldValue as INotifyCollectionChanged;
+
+            if (null != oldValueINotifyCollectionChanged)
+            {
+                oldValueINotifyCollectionChanged.CollectionChanged -= new NotifyCollectionChangedEventHandler(newValueINotifyCollectionChanged_CollectionChanged);
+            }
+            // Add handler for newValue.CollectionChanged (if possible)
+            var newValueINotifyCollectionChanged = newValue as INotifyCollectionChanged;
+            if (null != newValueINotifyCollectionChanged)
+            {
+                newValueINotifyCollectionChanged.CollectionChanged += new NotifyCollectionChangedEventHandler(newValueINotifyCollectionChanged_CollectionChanged);
+            }
+        }
+
+        void newValueINotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems == null )
+                return;
+
+            _rootGrid.RowDefinitions.Add(new RowDefinition());
+            var stackPanel = new StackPanel();
+            stackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+            stackPanel.VerticalAlignment = VerticalAlignment.Stretch;
+            stackPanel.Background = new SolidColorBrush(Colors.Blue);
+            stackPanel.Margin = new Thickness(0, 0, 0, 5);
+            stackPanel.SetValue(Grid.RowProperty, _rootGrid.RowDefinitions.Count - 1);
+            _rootGrid.Children.Add(stackPanel);
+        }
+
 
         static EventHubMonitor()
         {
@@ -86,16 +126,14 @@ namespace EventHubber.Controls
 
         public override void OnApplyTemplate()
         {
-            _lblEventHubName = this.GetTemplateChild(EventHubNameLabel) as Label;
+            _rootGrid = this.GetTemplateChild(RootGrid) as Grid;
 
             _isReady = true;
-            UpdateControl();
             base.OnApplyTemplate();
         }
 
-        private void UpdateControl()
-        {
-            _lblEventHubName.Content = this.EventHubName;
-        }
+        
+       
+
     }
 }

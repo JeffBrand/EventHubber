@@ -76,6 +76,7 @@ namespace EventHubber.Services
                     _foundPartitions.OnNext(partition);
                 }
 
+                _foundPartitions.OnCompleted();
                 
             });
 

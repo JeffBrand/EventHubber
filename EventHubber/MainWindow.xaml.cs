@@ -30,7 +30,6 @@ namespace EventHubber
 
         private async void openButton_Click(object sender, RoutedEventArgs e)
         {
-            progressBar.Visibility = Visibility.Visible;
             //service = new EventHubService(txtConnectionString.Text);
             //await service.OpenEventHubAsync(txtEventHub.Text);
             //service = new EventHubService("Endpoint=sb://jbrandhackathon.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=M6p0Uz+OoSN5cUHySyYSaXKQ//f4ba4P5tz0n1HSFOA=");
@@ -38,7 +37,6 @@ namespace EventHubber
 
             //partitionList.ItemsSource = 
             //messageList.ItemsSource = service.Messages;
-            progressBar.Visibility = Visibility.Hidden;
            
         }
 
@@ -87,6 +85,7 @@ namespace EventHubber
                     throw new InvalidOperationException("Invalid Tag on Checkpoint Radio Button");
                     
             }
+
         }
 
         private void messageList_SelectionChanged(object sender, SelectionChangedEventArgs e)
