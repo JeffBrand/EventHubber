@@ -105,6 +105,9 @@ namespace EventHubber.ViewModel
                 RaisePropertyChanged("NumberOfMessagesReceived");
             }
         }
+
+        public int MessagePerPartition { get; set; }
+
         public int PastMinutes { get; set; }
         public int PastMessages { get; set; }
 
@@ -147,6 +150,8 @@ namespace EventHubber.ViewModel
                 App.Current.Dispatcher.BeginInvoke(new Action(() => {
                     Messages.Insert(0,new MessageViewModel(m));
                     NumberOfMessagesReceived++;
+                    if (Messages.Count > Partitions.Count * MessagePerPartition)
+                        Messages.RemoveAt(Messages.Count - 1);
                 }), null);
             });
             SetupCommands();

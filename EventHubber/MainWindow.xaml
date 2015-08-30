@@ -111,6 +111,10 @@
                         </RadioButton>
                     </Grid>
                 </GroupBox>
+                <StackPanel Grid.Column="1">
+                    <TextBlock x:Name="textBlock2" TextWrapping="Wrap" Text="Msgs per Partition:"/>
+                    <TextBox Text="100"/>
+                </StackPanel>
 
             </Grid>
             <CheckBox x:Name="checkBox" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="4" IsChecked="{Binding EventHub.SaveSettings}" Content="Save"/>
@@ -142,7 +146,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Publisher: "/>
-            <TextBox Grid.Column="1" x:Name="txtDeviceId" HorizontalAlignment="Left" Height="18" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="150"/>
+            <TextBox Grid.Column="1" x:Name="txtDeviceId" HorizontalAlignment="Left" Height="18" TextWrapping="Wrap" VerticalAlignment="Top" Width="150"/>
             <Button Grid.Column="2" Content="Find" Margin="20,0,0,0" Command="{Binding EventHub.FindPublisher}" CommandParameter="{Binding Text, ElementName=txtDeviceId}"/>
         </Grid>
 
