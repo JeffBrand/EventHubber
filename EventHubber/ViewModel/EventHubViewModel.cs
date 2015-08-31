@@ -127,6 +127,7 @@ namespace EventHubber.ViewModel
         public int PastMinutes { get; set; }
         public int PastMessages { get; set; }
 
+        List<MessageViewModel> _allMessages = new List<MessageViewModel>();
 
         public ObservableCollection<PartitionViewModel> Partitions { get; set; }
         public ObservableCollection<MessageViewModel> Messages{ get; set; }
@@ -141,7 +142,7 @@ namespace EventHubber.ViewModel
 
         public RelayCommand<PartitionViewModel> Read { get; set; }
 
-        public RelayCommand<string> FindPublisher { get; set; }
+        public RelayCommand<string> FilterByPublisher { get; set; }
 
         public RelayCommand Stop { get; set; }
 
@@ -161,10 +162,15 @@ namespace EventHubber.ViewModel
             _service.MessageReceived.Subscribe((m) =>
             {
                 App.Current.Dispatcher.BeginInvoke(new Action(() => {
-                    Messages.Insert(0,new MessageViewModel(m));
+                    var view = new MessageViewModel(m);
+                    _allMessages.Insert(0,view);
+                    Messages.Insert(0,view);
                     NumberOfMessagesReceived++;
                     if (Messages.Count > Partitions.Count * MessagePerPartition)
+                    {
                         Messages.RemoveAt(Messages.Count - 1);
+                        _allMessages.RemoveAt(_allMessages.Count - 1);
+                    }
                 }), null);
             });
             SetupCommands();
@@ -244,7 +250,7 @@ namespace EventHubber.ViewModel
             }
                 );
 
-            this.FindPublisher = new RelayCommand<string>((publisher) =>
+            this.FilterByPublisher = new RelayCommand<string>((publisher) =>
             {
                 if (string.IsNullOrWhiteSpace(publisher))
                     return;

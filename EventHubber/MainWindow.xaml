@@ -1,13 +1,14 @@
-﻿<Window
+﻿<MahApps:MetroWindow
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EventHubber"
+        xmlns:MahApps="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:Converters="clr-namespace:EventHubber.Converters" xmlns:Controls="clr-namespace:EventHubber.Controls" x:Class="EventHubber.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
-    <Window.Resources>
+    <MahApps:MetroWindow.Resources>
         <Converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
         <DataTemplate x:Key="PartitionTemplate">
@@ -25,9 +26,6 @@
         </DataTemplate>
         <Style x:Key="StretchContainterStyle" TargetType="{x:Type ListViewItem}">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-
-
-
         </Style>
         <DataTemplate x:Key="MessageTemplate">
             <Grid>
@@ -42,7 +40,7 @@
             </Grid>
         </DataTemplate>
 
-    </Window.Resources>
+    </MahApps:MetroWindow.Resources>
     <Grid x:Name="rootGrid" DataContext="{Binding Main, Mode=OneWay, Source={StaticResource Locator}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
@@ -53,12 +51,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="397*"/>
+            <RowDefinition/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="55*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <Button x:Name="stopButton" Content="Stop" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Height="20" Grid.Column="1" Grid.Row="4" Command="{Binding EventHub.Stop}"/>
-        <Grid Grid.Column="2" Margin="0,20,0,10">
+        <Button Style="{DynamicResource SquareButtonStyle}" x:Name="stopButton" Content="Stop" HorizontalAlignment="Right" VerticalAlignment="Top" Width="74" Grid.Column="1" Grid.Row="4" Command="{Binding EventHub.Stop}"/>
+        <Grid Grid.Column="1" Margin="198,20,0,10" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -71,7 +70,7 @@
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="openButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="openButton_Click" Height="20" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2" Command="{Binding EventHub.Open}"/>
+            <Button x:Name="openButton" Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="openButton_Click" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2" Command="{Binding EventHub.Open}" Style="{DynamicResource SquareButtonStyle}"/>
             <Label x:Name="label" Content="Connection String:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label x:Name="label1" Content="Event Hub:" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1"/>
             <TextBox x:Name="txtConnectionString" TextWrapping="Wrap" Grid.Column="2" Text="{Binding EventHub.EventHubConnectionString}" Margin="0,0,0,10"/>
@@ -121,8 +120,8 @@
             <CheckBox x:Name="checkBox" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="4" IsChecked="{Binding EventHub.SaveSettings}" Content="Save"/>
 
         </Grid>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"><Run Text="Partions Message Count: "/><Run Text=" "/><Run Text="{Binding EventHub.TotalMessageCount}"/></TextBlock>
-        <ListView x:Name="partitionList" Grid.Row="2" Grid.Column="1" ItemTemplate="{DynamicResource PartitionTemplate}" ItemContainerStyle="{DynamicResource StretchContainterStyle}" SelectionChanged="partitionList_SelectionChanged" ItemsSource="{Binding EventHub.Partitions}">
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1"><Run Text="Partions Message Count: "/><Run Text=" "/><Run Text="{Binding EventHub.TotalMessageCount}"/></TextBlock>
+        <ListView x:Name="partitionList" Grid.Row="2" Grid.Column="1" ItemTemplate="{DynamicResource PartitionTemplate}" ItemContainerStyle="{DynamicResource StretchContainterStyle}" SelectionChanged="partitionList_SelectionChanged" ItemsSource="{Binding EventHub.Partitions}" Margin="0,0,0.5,0.5">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding EventHub.Read}" CommandParameter="{Binding SelectedItem, ElementName=partitionList}"/>
@@ -130,8 +129,8 @@
             </i:Interaction.Triggers>
         </ListView>
         <ProgressBar x:Name="progressBar" Grid.ColumnSpan="4" Height="5" VerticalAlignment="Bottom" IsIndeterminate="True" Visibility="{Binding EventHub.IsOpening, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <Button x:Name="openAllButton" Content="Read All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="4" Grid.Column="1" Command="{Binding EventHub.ReadAll}"/>
-        <ListView x:Name="messageList" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="20,0,0,0" ItemsSource="{Binding EventHub.Messages}" SelectionChanged="messageList_SelectionChanged">
+        <Button x:Name="openAllButton" Style="{DynamicResource SquareButtonStyle}" Content="Read All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Row="4" Grid.Column="1" Command="{Binding EventHub.ReadAll}" Margin="0"/>
+        <ListView x:Name="messageList" Grid.Column="2" Grid.Row="2" ItemTemplate="{DynamicResource MessageTemplate}" Margin="19.5,0,0,0.5" ItemsSource="{Binding EventHub.Messages}" SelectionChanged="messageList_SelectionChanged">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding ShowMessage}" CommandParameter="{Binding SelectedItem, ElementName=messageList}"/>
@@ -139,21 +138,21 @@
             </i:Interaction.Triggers>
         </ListView>
         <StackPanel Grid.Column="2" Margin="19.5,0,461,4" Orientation="Horizontal" Grid.Row="1">
-            <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Messages:" VerticalAlignment="Bottom"/>
         </StackPanel>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Right" TextWrapping="Wrap"  VerticalAlignment="Top" Grid.Row="4" Grid.Column="2"><Run Text="Messages Received: "/><Run Text=" "/><Run Text="{Binding EventHub.NumberOfMessagesReceived}"/></TextBlock>
-        <Grid Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right">
+        <Grid Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Publisher: "/>
-            <TextBox Grid.Column="1" x:Name="txtDeviceId" HorizontalAlignment="Left" Height="18" TextWrapping="Wrap" VerticalAlignment="Top" Width="150"/>
-            <Button Grid.Column="2" Content="Find" Margin="20,0,0,0" Command="{Binding EventHub.FindPublisher}" CommandParameter="{Binding Text, ElementName=txtDeviceId}"/>
+            <TextBlock Text="Publisher: " VerticalAlignment="Bottom"/>
+            <TextBox Grid.Column="1" x:Name="txtDeviceId" HorizontalAlignment="Left" Height="18" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="150"/>
+            <Button x:Name="txtFilterButton" Style="{DynamicResource SquareButtonStyle}" Grid.Column="2" Content="Filter" Margin="20,0,0,0" Command="{Binding EventHub.FilterByPublisher}" CommandParameter="{Binding Text, ElementName=txtDeviceId}"/>
         </Grid>
 
         <!--<Controls:EventHubMonitor Grid.Column="2" Grid.Row="2" Partitions="{Binding EventHub.Partitions}"/>-->
 
     </Grid>
-</Window>
+</MahApps:MetroWindow>
