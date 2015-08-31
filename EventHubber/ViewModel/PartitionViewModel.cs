@@ -15,6 +15,8 @@ namespace EventHubber.ViewModel
         private long BeginSequenceNumber { get; set; }
         private long LastSequenceNumber { get; set; }
 
+        public string Offset { get; set; }
+
         long _messageCount = 0;
         public long MessageCount {
             get { return _messageCount; }
@@ -31,7 +33,7 @@ namespace EventHubber.ViewModel
             this.PartitionId = info.PartitionId;
             BeginSequenceNumber = info.BeginSequenceNumber;
             LastSequenceNumber = info.LastEnqueuedSequenceNumber;
-
+            Offset = info.LastEnqueuedOffset;
 
             MessageCount = LastSequenceNumber - BeginSequenceNumber;
             if (MessageCount != 0)
