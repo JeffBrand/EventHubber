@@ -28,7 +28,7 @@ namespace EventHubber.Services
             return Task.Factory.StartNew(async () => {
                 Debug.WriteLine(string.Format("partition {0} started", PartitionId));
                
-                
+ 
                 while (!cancellation.IsCancellationRequested)
                 {
                     var message = await receiver.ReceiveAsync(TimeSpan.FromSeconds(5));
@@ -40,7 +40,7 @@ namespace EventHubber.Services
 
 
                 }
-                
+                await receiver.CloseAsync();
                 Debug.WriteLine(string.Format("partition {0} finished", PartitionId));
             }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
         }
